@@ -1,1 +1,3 @@
+# from .yolo_corner_badminton_court_detector import CornerDetector
 from .corner_badminton_court_detector import CornerDetector
+from .badminton_court_detector import CourtDetector
