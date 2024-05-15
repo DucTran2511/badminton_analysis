@@ -30,7 +30,6 @@ def save_video(output_video_frames, output_video_path):
         return
     # Get the shape of the frames
     height, width, _ = output_video_frames[0].shape
-
     # Define the codec using VideoWriter_fourcc and create a VideoWriter object
     # We specify output file name (output_video_path), codec 'mp4v', frames per second as 30.0, and frame size as (width, height)
     out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 30.0, (width, height))
