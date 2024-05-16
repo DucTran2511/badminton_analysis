@@ -16,7 +16,6 @@ class ShuttlecockTracker:
         for box in results.boxes:
             result = box.xyxy.tolist()[0]
             ball_dict[1] = result
-
         return ball_dict
 
     def detect_frames(self, frames, read_from_stub=False, stub_path=None):

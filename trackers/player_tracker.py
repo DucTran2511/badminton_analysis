@@ -1,11 +1,49 @@
 from ultralytics import YOLO
 import cv2
 import pickle
-
+from ultils import center_bbox
+import math
+import numpy as np
 
 class PlayerTracker:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
+
+    def player_tracking(self, centers, people_on_frames):
+        people = people_on_frames[0]
+        players = self.track_players_ID(centers, people)
+        player_detections = []
+
+        for player_dict in people_on_frames:
+            player = {track_id: bbox for track_id, bbox in player_dict.items() if track_id in players}
+            player_detections.append(player)
+
+        print(player_detections)
+        print('hehe')
+        return player_detections
+
+    # Player tracking
+    def track_players_ID(self, court_keypoint, people):
+        upper_point = court_keypoint[5]
+        lower_point = court_keypoint[4]
+        person_centers = []
+        players_id = np.zeros(2)
+        for id_tracked, person_bbox in people.items():
+            person_centers.append([id_tracked, center_bbox(person_bbox)])
+
+        min_upper_distance = float('inf')
+        min_lower_distance = float('inf')
+        # Get upper player
+        for player_id, person_center in person_centers:
+            upper_distance = math.dist(person_center, upper_point)
+            lower_distance = math.dist(person_center, lower_point)
+            if upper_distance < min_upper_distance:
+                min_upper_distance = upper_distance
+                players_id[0] = player_id
+            if lower_distance < min_lower_distance:
+                min_lower_distance = lower_distance
+                players_id[1] = player_id
+        return players_id
 
     def detect_frame(self, frame):
         results = self.model.track(frame, persist=True)[0]
